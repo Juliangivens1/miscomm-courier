@@ -1,0 +1,13 @@
+name = "miscomm-courier-chat"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+
+# Set the real secret with:
+#   wrangler secret put PERPLEXITY_API_KEY
+# Never put the key itself in this file or in vars below.
+
+# Route this worker at miscommlogistics.com/api/* once DNS is proxied through
+# Cloudflare. Update zone_name if the domain isn't already on Cloudflare.
+# [[routes]]
+# pattern = "miscommlogistics.com/api/*"
+# zone_name = "miscommlogistics.com"

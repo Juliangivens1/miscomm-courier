@@ -575,6 +575,80 @@
     }
     .float-call:hover { filter:brightness(1.05); }
 
+    /* CHAT WIDGET */
+    .chat-toggle {
+      position:fixed; right:1.4rem; bottom:5.4rem; z-index:90;
+      display:flex; align-items:center; justify-content:center;
+      width:52px; height:52px; border-radius:50%;
+      background:linear-gradient(135deg, var(--blue-2), var(--blue));
+      color:#fff; border:none; cursor:pointer;
+      font-size:1.3rem;
+      box-shadow:0 8px 24px rgba(0,0,0,0.4);
+      transition:filter 0.2s, transform 0.15s;
+    }
+    .chat-toggle:hover { filter:brightness(1.08); transform:translateY(-2px); }
+    .chat-panel {
+      position:fixed; right:1.4rem; bottom:9.6rem; z-index:95;
+      width:min(340px, calc(100vw - 2.8rem)); max-height:min(460px, calc(100vh - 12rem));
+      background:var(--steel); border:1px solid var(--border-blue);
+      display:none; flex-direction:column; overflow:hidden;
+      box-shadow:0 16px 40px rgba(0,0,0,0.5);
+    }
+    .chat-panel.open { display:flex; }
+    .chat-panel-head {
+      padding:0.9rem 1.1rem; background:var(--charcoal);
+      border-bottom:1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .chat-panel-title {
+      font-family:'Barlow Condensed',sans-serif; font-weight:800;
+      font-size:0.85rem; letter-spacing:0.1em; text-transform:uppercase;
+      color:var(--white);
+    }
+    .chat-panel-close {
+      background:none; border:none; color:var(--muted);
+      font-size:1.1rem; cursor:pointer; line-height:1;
+    }
+    .chat-panel-close:hover { color:var(--white); }
+    .chat-messages {
+      flex:1; overflow-y:auto; padding:1rem 1.1rem;
+      display:flex; flex-direction:column; gap:0.7rem;
+      font-size:0.86rem; line-height:1.55;
+    }
+    .chat-msg { max-width:88%; padding:0.55rem 0.75rem; }
+    .chat-msg.user {
+      align-self:flex-end; background:var(--blue-light);
+      border:1px solid var(--border-blue); color:var(--white);
+    }
+    .chat-msg.bot {
+      align-self:flex-start; background:var(--mid);
+      border:1px solid var(--border); color:var(--white);
+    }
+    .chat-msg.error { border-color:#c4372f; color:#ff9f97; }
+    .chat-input-row {
+      display:flex; gap:0.5rem; padding:0.8rem;
+      border-top:1px solid var(--border); background:var(--charcoal);
+    }
+    .chat-input {
+      flex:1; background:var(--steel); border:1px solid rgba(255,255,255,0.08);
+      color:var(--white); padding:0.55rem 0.75rem; font-family:'Barlow',sans-serif;
+      font-size:0.86rem; outline:none;
+    }
+    .chat-input:focus { border-color:var(--blue-2); }
+    .chat-send {
+      background:linear-gradient(135deg, var(--blue-2), var(--blue));
+      color:#fff; border:none; padding:0.55rem 1rem;
+      font-family:'Barlow Condensed',sans-serif; font-weight:800;
+      font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase;
+      cursor:pointer; transition:filter 0.2s;
+    }
+    .chat-send:hover { filter:brightness(1.1); }
+    .chat-send:disabled { opacity:0.5; cursor:default; }
+    @media (max-width:900px) {
+      .chat-toggle { bottom:5.4rem; }
+      .chat-panel { bottom:9.6rem; right:0.9rem; }
+    }
+
     /* ACCESSIBILITY */
     a:focus-visible, button:focus-visible, .form-input:focus-visible, .form-select:focus-visible, .form-textarea:focus-visible {
       outline:2px solid var(--accent); outline-offset:3px;
@@ -967,6 +1041,22 @@
   📞 <span>Call (614) 526-8207</span>
 </a>
 
+<!-- CHAT WIDGET -->
+<button type="button" class="chat-toggle" id="chat-toggle" aria-label="Open chat assistant" aria-expanded="false">💬</button>
+<div class="chat-panel" id="chat-panel" role="dialog" aria-label="Miscomm Logistics chat assistant">
+  <div class="chat-panel-head">
+    <div class="chat-panel-title">Ask Miscomm</div>
+    <button type="button" class="chat-panel-close" id="chat-close" aria-label="Close chat">✕</button>
+  </div>
+  <div class="chat-messages" id="chat-messages">
+    <div class="chat-msg bot">Hi! Ask me about medical courier, same-day delivery, airport runs, or anything else on this site.</div>
+  </div>
+  <form class="chat-input-row" id="chat-form">
+    <input class="chat-input" id="chat-input" type="text" placeholder="Type a question…" maxlength="2000" autocomplete="off" required>
+    <button type="submit" class="chat-send" id="chat-send">Send</button>
+  </form>
+</div>
+
 <script>
   document.getElementById('pickup-form').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -991,6 +1081,75 @@
     status.classList.add('show');
     window.location.href = mailto;
   });
+
+  // Chat widget — talks to the Cloudflare Worker proxy, which holds the
+  // Perplexity API key server-side. Update CHAT_API_ENDPOINT once the
+  // worker is deployed and routed (see worker/README.md).
+  (function () {
+    var CHAT_API_ENDPOINT = '/api/chat';
+
+    var toggle = document.getElementById('chat-toggle');
+    var panel = document.getElementById('chat-panel');
+    var closeBtn = document.getElementById('chat-close');
+    var form = document.getElementById('chat-form');
+    var input = document.getElementById('chat-input');
+    var sendBtn = document.getElementById('chat-send');
+    var messages = document.getElementById('chat-messages');
+
+    function setOpen(open) {
+      panel.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) input.focus();
+    }
+
+    toggle.addEventListener('click', function () {
+      setOpen(!panel.classList.contains('open'));
+    });
+    closeBtn.addEventListener('click', function () { setOpen(false); });
+
+    function addMessage(text, kind) {
+      var el = document.createElement('div');
+      el.className = 'chat-msg ' + kind;
+      el.textContent = text;
+      messages.appendChild(el);
+      messages.scrollTop = messages.scrollHeight;
+      return el;
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var text = input.value.trim();
+      if (!text) return;
+
+      addMessage(text, 'user');
+      input.value = '';
+      input.disabled = true;
+      sendBtn.disabled = true;
+      var pending = addMessage('Thinking…', 'bot');
+
+      fetch(CHAT_API_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text })
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error('Request failed');
+          return res.json();
+        })
+        .then(function (data) {
+          pending.textContent = data.reply || 'Sorry, no answer came back — please call (614) 526-8207.';
+        })
+        .catch(function () {
+          pending.textContent = 'Something went wrong. Please call (614) 526-8207 or use the form below.';
+          pending.classList.add('error');
+        })
+        .finally(function () {
+          input.disabled = false;
+          sendBtn.disabled = false;
+          input.focus();
+        });
+    });
+  })();
 </script>
 
 </body>

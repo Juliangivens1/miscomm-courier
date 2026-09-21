@@ -1,0 +1,18 @@
+{
+  "name": "miscomm-courier-chat-worker",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker proxy that holds the Perplexity API key server-side and answers the site's chat widget.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@perplexity-ai/perplexity_ai": "^0.38.5"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
