@@ -448,6 +448,21 @@
     }
     .feat-desc { font-size:0.86rem; color:var(--muted); line-height:1.6; }
 
+    /* SCHEDULE */
+    .schedule-section { background:var(--steel); }
+    .schedule-embed-wrap {
+      max-width:760px; margin:3.5rem auto 0;
+      background:#fff; border-radius:14px; overflow:hidden;
+      box-shadow:0 30px 80px rgba(0,0,0,0.45), 0 0 0 1px var(--border-blue);
+    }
+    .schedule-embed-wrap iframe { display:block; width:100%; height:600px; border:0; }
+    .schedule-note {
+      max-width:760px; margin:1.4rem auto 0;
+      font-size:0.85rem; color:var(--muted); text-align:center;
+    }
+    .schedule-note a { color:var(--accent); text-decoration:none; }
+    .schedule-note a:hover { text-decoration:underline; }
+
     /* CONTACT */
     .contact-section { background:var(--steel); }
     .contact-inner {
@@ -598,6 +613,7 @@
       .features-grid { grid-template-columns:1fr; }
       .contact-inner { grid-template-columns:1fr; gap:3rem; }
       .form-row { grid-template-columns:1fr; }
+      .schedule-embed-wrap iframe { height:520px; }
       .footer-top { grid-template-columns:1fr; gap:2rem; }
       .float-call span { display:none; }
       .float-call { padding:0.9rem; }
@@ -613,6 +629,7 @@
     <li><a href="#services">Services</a></li>
     <li><a href="#certifications">Coverage</a></li>
     <li><a href="#about">About</a></li>
+    <li><a href="#schedule">Schedule</a></li>
     <li><a href="tel:+16145268207" class="nav-call">📞 <strong>(614) 526-8207</strong></a></li>
     <li><a href="#contact" class="nav-cta">Book a Delivery</a></li>
   </ul>
@@ -836,6 +853,17 @@
   </div>
 </section>
 
+<!-- SCHEDULE -->
+<section class="section schedule-section" id="schedule">
+  <div class="section-eyebrow">Book Instantly</div>
+  <h2 class="section-title">SCHEDULE <span>ONLINE</span></h2>
+  <p class="section-desc">Pick a day and time that works — it lands directly on my calendar, no back-and-forth. For medical courier runs, business accounts, or anything that doesn't fit a standard slot, use the contact form below instead.</p>
+  <div class="schedule-embed-wrap">
+    <iframe src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0E_r5suRjKYy7buT7iDOk4MDBcau5VNKA8j_goNldAOraIbB9MJzk6nCm9nLg6k2yg5x09PKvb?gv=true" style="border: 0" width="100%" height="600" frameborder="0"></iframe>
+  </div>
+  <p class="schedule-note">Having trouble with the calendar? <a href="tel:+16145268207">Call (614) 526-8207</a> and I'll get you booked directly.</p>
+</section>
+
 <!-- CONTACT -->
 <section class="section contact-section" id="contact">
   <div class="section-eyebrow">Get Moving</div>
@@ -949,6 +977,7 @@
       <ul class="footer-links">
         <li><a href="#about">About</a></li>
         <li><a href="#certifications">Coverage</a></li>
+        <li><a href="#schedule">Schedule Online</a></li>
         <li><a href="#contact">Book a Delivery</a></li>
       </ul>
     </div>
