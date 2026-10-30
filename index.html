@@ -448,6 +448,15 @@
     }
     .feat-desc { font-size:0.86rem; color:var(--muted); line-height:1.6; }
 
+    /* WATCH */
+    .watch-section { background:var(--charcoal); }
+    .watch-wrap {
+      max-width:900px; margin:3.5rem auto 0;
+      border-radius:14px; overflow:hidden; position:relative;
+      box-shadow:0 30px 80px rgba(0,0,0,0.5), 0 0 0 1px var(--border);
+    }
+    .watch-wrap video { display:block; width:100%; aspect-ratio:16/9; background:#000; }
+
     /* SCHEDULE */
     .schedule-section { background:var(--steel); }
     .schedule-embed-wrap {
@@ -718,6 +727,19 @@
         <a href="tel:+16145268207" class="stats-call-number">(614) 526-8207</a>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- WATCH -->
+<section class="section watch-section" id="watch">
+  <div class="section-eyebrow">See It In Action</div>
+  <h2 class="section-title">WATCH THE <span>AD</span></h2>
+  <p class="section-desc">Same-day courier, medical runs, and airport rides — in nine seconds.</p>
+  <div class="watch-wrap">
+    <video controls preload="metadata" poster="assets/hero.jpg">
+      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3FU3OWuT5KODjxQa9pJwQkwVgOv/hf_20261030_054011_9cc743a1-bd86-4f93-beee-504063ff2c87.mp4" type="video/mp4">
+      Your browser doesn't support embedded video. <a href="https://d8j0ntlcm91z4.cloudfront.net/user_3FU3OWuT5KODjxQa9pJwQkwVgOv/hf_20261030_054011_9cc743a1-bd86-4f93-beee-504063ff2c87.mp4">Watch it here</a> instead.
+    </video>
   </div>
 </section>
 
